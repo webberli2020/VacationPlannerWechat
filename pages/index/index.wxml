@@ -1,0 +1,100 @@
+<view class="container">
+  <!-- 头部配置区域 -->
+  <view class="header">
+    <view class="main-title">员工休假计算 (支持拆分休假)</view>
+    
+    <!-- 第一行：单位 (独占) -->
+    <view class="config-row">
+      <view class="picker-item full-width">
+        <text class="label">所属单位：</text>
+        <picker class="picker-flex" bindchange="bindCompanyChange" value="{{selectedCompanyIndex}}" range="{{companies}}">
+          <view class="picker-val">{{companies[selectedCompanyIndex]}}</view>
+        </picker>
+      </view>
+    </view>
+    
+    <!-- 第二行：年度 + 重置按钮 -->
+    <view class="config-row-flex">
+      <view class="picker-item flex-2">
+        <text class="label">休假年度：</text>
+        <picker bindchange="bindYearChange" value="{{selectedYearIndex}}" range="{{years}}">
+          <view class="picker-val">{{years[selectedYearIndex]}}</view>
+        </picker>
+      </view>
+      <button class="reset-btn" bindtap="clearSelection">重置数据</button>
+    </view>
+
+    <!-- 假期选择区域 -->
+    <view class="leave-section">
+      <checkbox-group bindchange="handleCheckboxChange">
+        <view class="leave-item" wx:for="{{leaveOptions}}" wx:key="id">
+          <checkbox value="{{item.id}}" checked="{{item.checked}}" />
+          <view class="seq-badge {{item.seq ? 'active' : ''}}">{{item.seq}}</view>
+          <text class="tag">{{item.name}}：</text>
+          <input class="day-input" type="number" value="{{item.currentDays}}" bindinput="bindDaysInput" data-id="{{item.id}}" />
+          <text class="hint">天{{item.maxDays < 100 ? ' (≤'+item.maxDays+')' : ''}}</text>
+        </view>
+      </checkbox-group>
+    </view>
+
+    <!-- 统计详情区 -->
+    <view class="stats-container">
+      <!-- 第三行：开始日期 -->
+      <view class="date-display start-line">
+        <view class="res-title">开始休假日期</view>
+        <view class="res-body">{{startDateStr || '请点击下方日历选择'}}</view>
+      </view>
+
+      <!-- 第四行：统计小格 -->
+      <view class="mini-grid">
+        <view class="m-item">工作日 <text class="v">{{stats.work}}</text></view>
+        <view class="m-item">节假日 <text class="v">{{stats.holi}}</text></view>
+        <view class="m-item">周末 <text class="v">{{stats.week}}</text></view>
+      </view>
+
+      <!-- 第五行：截止日期 -->
+      <view class="date-display end-line">
+        <view class="res-title">休假截止日期</view>
+        <view class="res-body">{{finalEndDateStr || '-'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日历滚动区域 -->
+  <scroll-view class="calendar-scroll" scroll-y="true">
+    <view class="calendar-grid">
+      <view class="month-container" wx:for="{{calendarData}}" wx:for-item="month" wx:key="index">
+        <view class="month-title">{{month.year}}年 {{month.month}}月</view>
+        <view class="days-header">
+          <view class="weekday" wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this">{{item}}</view>
+        </view>
+        <view class="days-grid">
+          <view class="day-cell placeholder" wx:for="{{month.emptyCount}}" wx:key="index"></view>
+          <view class="day-cell {{item.type}} {{item.status}}" 
+                wx:for="{{month.days}}" 
+                wx:key="date" 
+                bindtap="handleDateClick" 
+                data-date="{{item.date}}">
+            <text class="day-num">{{item.day}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 关于按钮与弹窗 -->
+  <view class="about-btn" bindtap="toggleAbout">About</view>
+  
+  <view class="about-overlay" wx:if="{{showAbout}}" bindtap="toggleAbout">
+    <view class="about-dialog" catchtap="true">
+      <view class="dialog-title">关于程序</view>
+      <view class="dialog-body">
+        <view><text class="bold">名称：</text>员工休假组合计算系统</view>
+        <view><text class="bold">版本：</text>v1.0.0 (Mini Program)</view>
+        <view><text class="bold">开发：</text>Webber Gemini</view>
+        <view class="desc">功能：1.选择相应休假类型（有先后次序之分）和天数，点击开始休假日期后，系统自动计算休假截止日期。2.系统已内置常用地休假及调休配置。</view>
+      </view>
+      <button class="close-btn" bindtap="toggleAbout">关闭</button>
+    </view>
+  </view>
+</view>

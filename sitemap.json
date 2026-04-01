@@ -1,0 +1,7 @@
+{
+  "desc": "关于小程序搜索规则的说明，见 https://developers.weixin.qq.com/miniprogram/dev/framework/sitemap.html",
+  "rules": [{
+  "action": "allow",
+  "page": "*"
+  }]
+}

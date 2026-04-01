@@ -1,0 +1,223 @@
+.header {
+  background: #ffffff;
+  padding: 30rpx 40rpx;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+}
+
+.main-title {
+  text-align: center;
+  color: #333;
+  font-size: 32rpx;
+  font-weight: bold;
+  border-bottom: 4rpx solid var(--primary-color);
+  padding-bottom: 10rpx;
+  margin-bottom: 30rpx;
+}
+
+.config-row {
+  margin-bottom: 20rpx;
+}
+
+.config-row-flex {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  background: #f8f8f8;
+  padding: 15rpx 25rpx;
+  border-radius: 12rpx;
+}
+
+.full-width { width: 100%; box-sizing: border-box; }
+.flex-2 { flex: 2; }
+.picker-flex { flex: 1; }
+
+.label { font-weight: bold; font-size: 26rpx; color: #666; min-width: 130rpx; }
+.picker-val { font-size: 28rpx; color: var(--primary-color); font-weight: bold; }
+
+.reset-btn {
+  font-size: 24rpx;
+  padding: 0 20rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  background: #fff;
+  border: 2rpx solid #ddd;
+  border-radius: 12rpx;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* 假期选择区域 (紧凑双列布局) */
+.leave-section {
+  margin: 15rpx 0;
+  background: #f4f4f4;
+  padding: 10rpx;
+  border-radius: 16rpx;
+}
+
+.leave-section checkbox-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10rpx;
+}
+
+.leave-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  background: white;
+  padding: 15rpx 8rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.01);
+}
+
+.seq-badge {
+  background: #eee;
+  color: #999;
+  width: 32rpx;
+  height: 32rpx;
+  min-width: 32rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18rpx;
+}
+
+.seq-badge.active { 
+  background-color: var(--primary-color); 
+  color: white;
+}
+
+.tag { font-size: 23rpx; color: #333; white-space: nowrap; }
+
+.day-input {
+  width: 45rpx;
+  text-align: center;
+  border-bottom: 2rpx solid var(--primary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 24rpx;
+}
+
+.hint { font-size: 18rpx; color: #bbb; margin-left: -5rpx; }
+
+/* 统计详情区 */
+.stats-container {
+  margin-top: 30rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.date-display {
+  padding: 20rpx 30rpx;
+  border-radius: 16rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.05);
+}
+
+.start-line, .end-line {
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
+.res-title { font-size: 24rpx; opacity: 0.9; }
+.res-body { font-size: 30rpx; font-weight: bold; }
+
+.mini-grid {
+  display: flex;
+  gap: 15rpx;
+}
+
+.m-item {
+  flex: 1;
+  background: #fff;
+  padding: 15rpx 10rpx;
+  border-radius: 12rpx;
+  text-align: center;
+  border: 2rpx solid #eee;
+  font-size: 22rpx;
+  color: #888;
+}
+
+.m-item .v {
+  display: block;
+  font-size: 28rpx;
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-top: 4rpx;
+}
+
+/* 日历滚动 */
+.calendar-scroll {
+  height: calc(100vh - 750rpx);
+}
+
+.month-container {
+  background: white;
+  margin-bottom: 30rpx;
+  padding: 20rpx;
+  border-radius: 12rpx;
+}
+
+.month-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 30rpx;
+  margin-bottom: 20rpx;
+  color: #333;
+}
+
+.days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 10rpx;
+}
+
+.weekday { font-size: 22rpx; color: #999; }
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6rpx;
+}
+
+.day-cell {
+  height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  position: relative;
+  border-radius: 8rpx;
+}
+
+.day-cell.holiday::after { content: '休'; position: absolute; top: 4rpx; right: 4rpx; font-size: 16rpx; color: var(--weekend-color); font-weight: bold; }
+.day-cell.workday-override::after { content: '班'; position: absolute; top: 4rpx; right: 4rpx; font-size: 16rpx; color: var(--workday-color); font-weight: bold; }
+
+.holiday { background: #fff1f0; }
+.weekend { color: var(--weekend-color); }
+.in-range { background: var(--range-bg); }
+.selected-point { background-color: var(--primary-color) !important; color: #fff !important; font-weight: bold; }
+
+/* 弹窗样式 */
+.about-btn { position: fixed; bottom: 30rpx; right: 30rpx; background: rgba(255,255,255,0.8); padding: 10rpx 20rpx; border-radius: 40rpx; box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1); font-size: 24rpx; z-index: 100; }
+
+.about-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.about-dialog { width: 80%; background: white; padding: 40rpx; border-radius: 20rpx; }
+.dialog-title { font-size: 34rpx; font-weight: bold; border-bottom: 2rpx solid #eee; padding-bottom: 20rpx; margin-bottom: 20rpx; text-align: center; }
+.dialog-body { line-height: 1.6; font-size: 26rpx; color: #666; }
+.bold { font-weight: bold; color: #333; }
+.desc { margin-top: 20rpx; font-size: 24rpx; border-top: 2rpx solid #f0f0f0; padding-top: 20rpx; }
+.close-btn { margin-top: 40rpx; background: var(--primary-color); color: white; border-radius: 40rpx; }
