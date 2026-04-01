@@ -1,23 +1,24 @@
-const CONFIG = {
+const DEFAULT_CONFIG = {
   "驻巴西使馆": {
-    "2025": { holidays: ['01-01', '01-28', '01-29', '01-30', '01-31', '04-04', '05-01', '05-02', '05-30', '09-30', '10-01', '10-02', '10-03'], extraWorkdays: [] },
-    "2026": { holidays: ['01-01', '02-16', '02-17', '02-18', '02-19', '04-06', '05-01', '05-04', '06-19', '09-25', '10-01', '10-02', '10-05'], extraWorkdays: [] }
+    "2025": { holidays: ['01-01','01-28','01-29','01-30','01-31','04-04','05-01','05-02','05-30','09-30','10-01','10-02','10-03'], extraWorkdays: [] },
+    "2026": { holidays: ['01-01','02-16','02-17','02-18','02-19','04-06','05-01','05-04','06-19','09-25','10-01','10-02','10-05'], extraWorkdays: [] }
   },
   "部机关": {
-    "2025": { holidays: ['01-01', '01-28', '01-29', '01-30', '01-31', '02-03', '02-04', '04-04', '05-01', '05-02', '05-05', '06-02', '09-30', '10-01', '10-02', '10-03', '10-06', '10-07', '10-08'], extraWorkdays: ['01-26', '02-08', '04-27', '09-28', '10-11'] },
-    "2026": { holidays: ['01-01', '01-02', '02-16', '02-17', '02-18', '02-19', '02-20', '02-23', '04-06', '05-01', '05-04', '05-05', '06-19', '09-25', '10-01', '10-02', '10-05', '10-06', '10-07'], extraWorkdays: ['01-04', '02-14', '02-28', '05-09', '09-20', '10-10'] }
+    "2025": { holidays: ['01-01','01-28','01-29','01-30','01-31','02-03','02-04','04-04','05-01','05-02','05-05','06-02','09-30','10-01','10-02','10-03','10-06','10-07','10-08'], extraWorkdays: ['01-26','02-08','04-27','09-28','10-11'] },
+    "2026": { holidays: ['01-01','01-02','02-16','02-17','02-18','02-19','02-20','02-23','04-06','05-01','05-04','05-05','06-19','09-25','10-01','10-02','10-05','10-06','10-07'], extraWorkdays: ['01-04','02-14','02-28','05-09','09-20','10-10'] }
   }
 };
 
 Page({
   data: {
-    companies: Object.keys(CONFIG),
+    config: {}, // 存储所有配置数据
+    companies: [],
     selectedCompanyIndex: 0,
     years: [],
     selectedYearIndex: 0,
     startDateStr: '',
     finalEndDateStr: '',
-    leaveQueue: [], // 存储选中的假期类型 ID
+    leaveQueue: [], 
     leaveOptions: [
       { id: 'annual', name: '年休假', maxDays: 15, currentDays: 15, checked: false, seq: '' },
       { id: 'term', name: '任期假', maxDays: 20, currentDays: 20, checked: false, seq: '' },
@@ -25,12 +26,24 @@ Page({
       { id: 'travel', name: '路途假', maxDays: 4, currentDays: 2, checked: false, seq: '' }
     ],
     stats: { work: 0, holi: 0, week: 0 },
-    calendarData: [], // 渲染层使用的日历数据
-    showAbout: false
+    calendarData: [], 
   },
 
-  onLoad() {
-    this.updateYearOptions(true);
+  onShow() {
+    // 每次显示页面时刷新配置 (确保从管理页更新的数据生效)
+    this.refreshConfig();
+  },
+
+  refreshConfig() {
+    const config = wx.getStorageSync('HOLIDAY_CONFIG') || DEFAULT_CONFIG;
+    const companies = Object.keys(config);
+    
+    this.setData({ 
+      config, 
+      companies 
+    }, () => {
+      this.updateYearOptions();
+    });
   },
 
   // 切换单位
@@ -46,8 +59,11 @@ Page({
   },
 
   updateYearOptions(isInitial = false) {
-    const company = this.data.companies[this.data.selectedCompanyIndex];
-    const years = Object.keys(CONFIG[company]);
+    const { config, companies, selectedCompanyIndex } = this.data;
+    if (!companies[selectedCompanyIndex]) return;
+    
+    const company = companies[selectedCompanyIndex];
+    const years = Object.keys(config[company] || {});
     let initialYearIdx = 0;
     if (isInitial) {
       const curY = new Date().getFullYear().toString();
@@ -63,8 +79,10 @@ Page({
   getDayType(date) {
     const y = date.getFullYear();
     const mmdd = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    const company = this.data.companies[this.data.selectedCompanyIndex];
-    const conf = CONFIG[company] && CONFIG[company][y] ? CONFIG[company][y] : { holidays: [], extraWorkdays: [] };
+    const { config, companies, selectedCompanyIndex } = this.data;
+    const companyName = companies[selectedCompanyIndex];
+    const conf = config[companyName] && config[companyName][y] ? config[companyName][y] : { holidays: [], extraWorkdays: [] };
+    
     if (conf.holidays.includes(mmdd)) return 'holiday';
     if (conf.extraWorkdays.includes(mmdd)) return 'workday-override';
     const day = date.getDay();
@@ -245,7 +263,4 @@ Page({
     return { year: y, month: m + 1, emptyCount: new Array(emptyCount).fill(0), days };
   },
 
-  toggleAbout() {
-    this.setData({ showAbout: !this.data.showAbout });
-  }
 });

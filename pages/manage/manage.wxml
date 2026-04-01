@@ -1,0 +1,73 @@
+<view class="container">
+  <view class="header-card">
+    <view class="title">节假日与调休配置中心</view>
+    
+    <!-- 单位管理行 -->
+    <view class="config-row-flex">
+      <view class="picker-item flex-1">
+        <text class="label">单位：</text>
+        <picker class="picker-val" bindchange="bindCompanyChange" value="{{selectedCompanyIdx}}" range="{{companies}}">
+          <view>{{companies[selectedCompanyIdx] || '请点击添加'}}</view>
+        </picker>
+      </view>
+      <button class="icon-btn" bindtap="addCompany">➕ 新增单位</button>
+    </view>
+
+    <!-- 年份管理行 -->
+    <view class="config-row-flex">
+      <view class="picker-item flex-1">
+        <text class="label">年份：</text>
+        <picker class="picker-val" bindchange="bindYearChange" value="{{selectedYearIdx}}" range="{{years}}">
+          <view>{{years[selectedYearIdx] || '请点击添加'}}</view>
+        </picker>
+      </view>
+      <button class="icon-btn" bindtap="addYear">➕ 新增年份</button>
+    </view>
+  </view>
+
+  <!-- 假期与调休管理详情 (仅在有选中的年份时显示) -->
+  <view class="content-scroll" wx:if="{{years[selectedYearIdx]}}">
+    
+    <!-- 1. 节假日 (Holidays) -->
+    <view class="section-card">
+      <view class="section-header">
+        <text class="section-title">法定节假日 (MM-DD)</text>
+        <picker mode="date" bindchange="bindAddDate" data-type="holidays">
+          <button class="add-btn" size="mini">添加日期</button>
+        </picker>
+      </view>
+      
+      <view class="tags-container">
+        <view class="date-tag holiday-tag" wx:for="{{config[companies[selectedCompanyIdx]][years[selectedYearIdx]].holidays}}" wx:key="*this">
+          <text>{{item}}</text>
+          <icon type="clear" size="14" color="white" bindtap="deleteDate" data-type="holidays" data-val="{{item}}" />
+        </view>
+        <view class="empty-hint" wx:if="{{!config[companies[selectedCompanyIdx]][years[selectedYearIdx]].holidays.length}}">暂未配置节假日</view>
+      </view>
+    </view>
+
+    <!-- 2. 加班补班日 (Extra Workdays) -->
+    <view class="section-card">
+      <view class="section-header">
+        <text class="section-title">由于调休的补班日 (MM-DD)</text>
+        <picker mode="date" bindchange="bindAddDate" data-type="extraWorkdays">
+          <button class="add-btn" size="mini">添加日期</button>
+        </picker>
+      </view>
+      
+      <view class="tags-container">
+        <view class="date-tag workday-tag" wx:for="{{config[companies[selectedCompanyIdx]][years[selectedYearIdx]].extraWorkdays}}" wx:key="*this">
+          <text>{{item}}</text>
+          <icon type="clear" size="14" color="white" bindtap="deleteDate" data-type="extraWorkdays" data-val="{{item}}" />
+        </view>
+        <view class="empty-hint" wx:if="{{!config[companies[selectedCompanyIdx]][years[selectedYearIdx]].extraWorkdays.length}}">暂未配置补班日</view>
+      </view>
+    </view>
+
+    <button class="reset-all-btn" bindtap="resetToDefault">恢复出厂默认数据</button>
+  </view>
+
+  <view class="no-data-hint" wx:else>
+    请先在顶部选定或新增【单位】和【年份】
+  </view>
+</view>

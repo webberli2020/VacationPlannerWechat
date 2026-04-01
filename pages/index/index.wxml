@@ -81,20 +81,4 @@
       </view>
     </view>
   </scroll-view>
-
-  <!-- 关于按钮与弹窗 -->
-  <view class="about-btn" bindtap="toggleAbout">About</view>
-  
-  <view class="about-overlay" wx:if="{{showAbout}}" bindtap="toggleAbout">
-    <view class="about-dialog" catchtap="true">
-      <view class="dialog-title">关于程序</view>
-      <view class="dialog-body">
-        <view><text class="bold">名称：</text>员工休假组合计算系统</view>
-        <view><text class="bold">版本：</text>v1.0.0 (Mini Program)</view>
-        <view><text class="bold">开发：</text>Webber Gemini</view>
-        <view class="desc">功能：1.选择相应休假类型（有先后次序之分）和天数，点击开始休假日期后，系统自动计算休假截止日期。2.系统已内置常用地休假及调休配置。</view>
-      </view>
-      <button class="close-btn" bindtap="toggleAbout">关闭</button>
-    </view>
-  </view>
 </view>

@@ -1,0 +1,50 @@
+<view class="container">
+  <!-- 顶部 Logo/标题区域 -->
+  <view class="logo-section">
+    <view class="app-icon">📅</view>
+    <view class="app-name">员工休假组合计算系统</view>
+    <view class="app-version">v1.1.0 · Mini Program</view>
+  </view>
+
+  <!-- 信息详情卡片 -->
+  <view class="info-card">
+    <view class="info-row">
+      <text class="label">开发者</text>
+      <text class="value">Webber Gemini</text>
+    </view>
+    <view class="info-row">
+      <text class="label">所属系列</text>
+      <text class="value">效率提速系列工具</text>
+    </view>
+    <view class="info-row">
+      <text class="label">核心逻辑</text>
+      <text class="value">混合工作日/自然日计算引擎</text>
+    </view>
+  </view>
+
+  <!-- 详细功能说明 -->
+  <view class="description-section">
+    <view class="section-title">功能说明</view>
+    <view class="desc-item">1. <text class="bold">智能计算</text>：只需点击日期并勾选假期，系统即可根据所选次序精准计算截止日期。</view>
+    <view class="desc-item">2. <text class="bold">动态配置</text>：可通过“假日管理”Tab 实时修改各单位不同年度的节假日数据，保存后即刻生效。</view>
+    <view class="desc-item">3. <text class="bold">跨年支持</text>：支持跨年度计算及长达多月的休假路径预览。</view>
+  </view>
+
+  <!-- 更新记录 -->
+  <view class="history-section">
+    <view class="section-title">更新记录</view>
+    <view class="log-item">
+      <view class="log-version">v1.1.0 (2026-04-01)</view>
+      <view class="log-content">新增假日管理 Tab；重构为三 Tab 导航结构；支持多单位及跨年配置本地持久化。</view>
+    </view>
+    <view class="log-item">
+      <view class="log-version">v1.0.0 (2026-01-20)</view>
+      <view class="log-content">微信小程序首发版本；支持混合日期逻辑计算。</view>
+    </view>
+  </view>
+
+  <!-- 页脚 -->
+  <view class="footer">
+    <view>© 2026 Webber Gemini All Rights Reserved</view>
+  </view>
+</view>
