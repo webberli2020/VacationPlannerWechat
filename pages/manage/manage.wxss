@@ -1,3 +1,16 @@
+.admin-notice {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+  padding: 20rpx 30rpx;
+  margin-bottom: 20rpx;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+}
+
+.is-admin { background: #f6ffed; border: 1rpx solid #b7eb8f; color: #52c41a; }
+.is-user { background: #e6f7ff; border: 1rpx solid #91d5ff; color: #1890ff; }
+
 .header-card {
   background: white;
   padding: 30rpx;

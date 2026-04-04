@@ -1,17 +1,8 @@
-const DEFAULT_CONFIG = {
-  "驻巴西使馆": {
-    "2025": { holidays: ['01-01','01-28','01-29','01-30','01-31','04-04','05-01','05-02','05-30','09-30','10-01','10-02','10-03'], extraWorkdays: [] },
-    "2026": { holidays: ['01-01','02-16','02-17','02-18','02-19','04-06','05-01','05-04','06-19','09-25','10-01','10-02','10-05'], extraWorkdays: [] }
-  },
-  "部机关": {
-    "2025": { holidays: ['01-01','01-28','01-29','01-30','01-31','02-03','02-04','04-04','05-01','05-02','05-05','06-02','09-30','10-01','10-02','10-03','10-06','10-07','10-08'], extraWorkdays: ['01-26','02-08','04-27','09-28','10-11'] },
-    "2026": { holidays: ['01-01','01-02','02-16','02-17','02-18','02-19','02-20','02-23','04-06','05-01','05-04','05-05','06-19','09-25','10-01','10-02','10-05','10-06','10-07'], extraWorkdays: ['01-04','02-14','02-28','05-09','09-20','10-10'] }
-  }
-};
+const { fetchConfig } = require('../../utils/cloudHelper');
 
 Page({
   data: {
-    config: {}, // 存储所有配置数据
+    config: {}, // 存储从云端同步的配置数据
     companies: [],
     selectedCompanyIndex: 0,
     years: [],
@@ -30,20 +21,27 @@ Page({
   },
 
   onShow() {
-    // 每次显示页面时刷新配置 (确保从管理页更新的数据生效)
+    // 每次显示页面时从云端刷新配置
     this.refreshConfig();
   },
 
-  refreshConfig() {
-    const config = wx.getStorageSync('HOLIDAY_CONFIG') || DEFAULT_CONFIG;
-    const companies = Object.keys(config);
-    
-    this.setData({ 
-      config, 
-      companies 
-    }, () => {
-      this.updateYearOptions();
-    });
+  async refreshConfig() {
+    wx.showLoading({ title: '同步云端配置...', mask: true });
+    try {
+      const config = await fetchConfig();
+      const companies = Object.keys(config);
+      
+      this.setData({ 
+        config, 
+        companies 
+      }, () => {
+        this.updateYearOptions();
+        wx.hideLoading();
+      });
+    } catch (err) {
+      wx.hideLoading();
+      wx.showToast({ title: '加载配置失败', icon: 'none' });
+    }
   },
 
   // 切换单位

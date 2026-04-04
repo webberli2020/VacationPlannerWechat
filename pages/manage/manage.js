@@ -1,16 +1,9 @@
-const DEFAULT_CONFIG = {
-  "驻巴西使馆": {
-    "2025": { holidays: ['01-01','01-28','01-29','01-30','01-31','04-04','05-01','05-02','05-30','09-30','10-01','10-02','10-03'], extraWorkdays: [] },
-    "2026": { holidays: ['01-01','02-16','02-17','02-18','02-19','04-06','05-01','05-04','06-19','09-25','10-01','10-02','10-05'], extraWorkdays: [] }
-  },
-  "部机关": {
-    "2025": { holidays: ['01-01','01-28','01-29','01-30','01-31','02-03','02-04','04-04','05-01','05-02','05-05','06-02','09-30','10-01','10-02','10-03','10-06','10-07','10-08'], extraWorkdays: ['01-26','02-08','04-27','09-28','10-11'] },
-    "2026": { holidays: ['01-01','01-02','02-16','02-17','02-18','02-19','02-20','02-23','04-06','05-01','05-04','05-05','06-19','09-25','10-01','10-02','10-05','10-06','10-07'], extraWorkdays: ['01-04','02-14','02-28','05-09','09-20','10-10'] }
-  }
-};
+const { fetchConfig, updateConfig, DEFAULT_CONFIG } = require('../../utils/cloudHelper');
+const app = getApp();
 
 Page({
   data: {
+    isAdmin: false,
     config: {},
     companies: [],
     selectedCompanyIdx: 0,
@@ -19,16 +12,25 @@ Page({
     currentDates: { holidays: [], extraWorkdays: [] }
   },
 
-  onShow() {
+  async onShow() {
+    await app.authPromise;
+    this.setData({ isAdmin: app.globalData.isAdmin });
     this.refreshLocalData();
   },
 
-  refreshLocalData() {
-    const config = wx.getStorageSync('HOLIDAY_CONFIG') || JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-    const companies = Object.keys(config);
-    this.setData({ config, companies }, () => {
-      this.updateYearList();
-    });
+  async refreshLocalData() {
+    wx.showLoading({ title: '同步配置...', mask: true });
+    try {
+      const config = await fetchConfig();
+      const companies = Object.keys(config);
+      this.setData({ config, companies }, () => {
+        this.updateYearList();
+        wx.hideLoading();
+      });
+    } catch (err) {
+      wx.hideLoading();
+      wx.showToast({ title: '加载失败', icon: 'none' });
+    }
   },
 
   updateYearList() {
@@ -156,9 +158,20 @@ Page({
     });
   },
 
-  saveAndRefresh(config) {
-    wx.setStorageSync('HOLIDAY_CONFIG', config);
-    wx.showToast({ title: '已更新' });
-    this.refreshLocalData();
+  async saveAndRefresh(config) {
+    if (!app.globalData.isAdmin) {
+      return wx.showModal({ title: '权限拒绝', content: '您不是管理员，无法保存修改', showCancel: false });
+    }
+
+    wx.showLoading({ title: '正在同步云端...', mask: true });
+    try {
+      await updateConfig(config);
+      wx.hideLoading();
+      wx.showToast({ title: '同步成功' });
+      this.refreshLocalData();
+    } catch (err) {
+      wx.hideLoading();
+      wx.showModal({ title: '更新失败', content: err.message, showCancel: false });
+    }
   }
 });
